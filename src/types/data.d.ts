@@ -14,55 +14,57 @@ export type GetRoomDataRequest = {
 };
 
 export type GetRoomDataResponse = {
-  _id: string;
-  idHouse: string;
-  idAuth: string;
-  name: string;
-  address: string;
-  status: boolean;
-  maxMember: number;
-  listMember: Array<{
-    memberName: string;
-    cardNumber: string;
-    status: boolean;
-    phoneNumber: string;
-  }>;
-  contract: {
-    addressCT: string;
-    timeCT: string;
-    startTime: string;
-    endTime: string;
-    additional: Array<string>;
-    fine: number;
-    imageContract: Array<string>;
-    infoTenant: {
-      name: string;
-      cardNumber: string;
-      phoneNumber: string;
-      dateRange: string;
-      issuedBy: string;
-      deposit: number;
-    };
-    infoLandlord: {
-      name: string;
-      cardNumber: string;
-      phoneNumber: string;
-      dateRange: string;
-      issuedBy: string;
-    };
-  };
-  price: number;
-  service: Array<{
+  data: {
+    _id: string;
+    idHouse: string;
+    idAuth: string;
     name: string;
-    label: string;
-    price: number;
+    address: string;
     status: boolean;
-    type: boolean;
-    idService: string;
-  }>;
-  area: number;
-  subName: string;
-  emailOfAuth: string;
+    maxMember: number;
+    listMember: Array<{
+      memberName: string;
+      cardNumber: string;
+      status: boolean;
+      phoneNumber: string;
+    }>;
+    contract: {
+      addressCT: string;
+      timeCT: string;
+      startTime: string;
+      endTime: string;
+      additional: Array<string>;
+      fine: number;
+      imageContract: Array<string>;
+      infoTenant: {
+        name: string;
+        cardNumber: string;
+        phoneNumber: string;
+        dateRange: string;
+        issuedBy: string;
+        deposit: number;
+      };
+      infoLandlord: {
+        name: string;
+        cardNumber: string;
+        phoneNumber: string;
+        dateRange: string;
+        issuedBy: string;
+      };
+    };
+    price: number;
+    service: Array<{
+      name: string;
+      label: string;
+      price: number;
+      status: boolean;
+      type: boolean;
+      idService: string;
+    }>;
+    area: number;
+    subName: string;
+    emailOfAuth: string;
+  };
 };
 
 export type GetBillRoomIDRequest = {
@@ -91,11 +93,11 @@ export type CreatePaymentResponse = {
   redirect: string;
 };
 
-export type GetListServiceRequest = {
+export type GetListServiceByHouseRequest = {
   building_id: string;
 };
 
-export type GetListServiceResponse = {
+export type GetListServiceByHouseResponse = {
   data: {
     idHouse: string;
     name: string;
@@ -119,4 +121,14 @@ export type GetListReportResponse = {
     content: string;
     status: boolean;
   };
+};
+
+export type GetListServiceRequest = {
+  building_id: string;
+  year: number;
+  type: 'dien' | 'nuoc';
+};
+
+export type GetListServiceResponse = {
+  data: {result: number[]; sum: number};
 };

@@ -9,6 +9,7 @@ type InitialState = {
     _id: string;
     building_id: string;
     name: string;
+    subName: string;
   };
 };
 
@@ -22,7 +23,9 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: state => {
-      state = initialState;
+      state.isAuth = false;
+      state.loading = false;
+      state.code_room = undefined;
     },
   },
   extraReducers: builder => {
@@ -31,14 +34,16 @@ const authSlice = createSlice({
     });
     builder.addCase(getRoomByID.fulfilled, (state, action) => {
       state.code_room = {
-        _id: action.payload._id,
-        building_id: action.payload.idHouse,
-        name: action.payload.name,
+        _id: action.payload.data._id,
+        building_id: action.payload.data.idHouse,
+        name: action.payload.data.name,
+        subName: action.payload.data.subName,
       };
       state.isAuth = true;
       state.loading = false;
     });
     builder.addCase(getRoomByID.rejected, state => {
+      state.isAuth = false;
       state.loading = false;
     });
   },

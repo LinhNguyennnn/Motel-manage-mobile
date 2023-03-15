@@ -11,6 +11,8 @@ import {
   GetDetailBillServiceResponse,
   GetListReportRequest,
   GetListReportResponse,
+  GetListServiceByHouseRequest,
+  GetListServiceByHouseResponse,
   GetListServiceRequest,
   GetListServiceResponse,
   GetRoomDataRequest,
@@ -118,8 +120,8 @@ export const getRoomByID = createAsyncThunk<
 });
 
 export const getListService = createAsyncThunk<
-  GetListServiceResponse,
-  GetListServiceRequest,
+  GetListServiceByHouseResponse,
+  GetListServiceByHouseRequest,
   ThunkAPI
 >('app/thunk/getListService', async (req, {rejectWithValue}) => {
   try {
@@ -144,6 +146,25 @@ export const getListReport = createAsyncThunk<
   try {
     const request: AxiosRequestConfig = {
       url: `/report/list-room/${req.building_id}`,
+      method: 'GET',
+    };
+
+    const {data} = await instance(request);
+
+    return data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const getBillServiceByYear = createAsyncThunk<
+  GetListServiceResponse,
+  GetListServiceRequest,
+  ThunkAPI
+>('app/thunk/getBillServiceByYear', async (req, {rejectWithValue}) => {
+  try {
+    const request: AxiosRequestConfig = {
+      url: `/statistical/get-bill-service/${req.building_id}/${req.type}/${req.year}`,
       method: 'GET',
     };
 

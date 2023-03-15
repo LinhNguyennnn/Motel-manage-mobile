@@ -1,27 +1,33 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {createStackNavigator} from '@react-navigation/stack';
-import {TouchableWithoutFeedback, View} from 'react-native';
+import {View} from 'react-native';
+import {
+  faBox,
+  faCoins,
+  faHospital,
+  faPalette,
+  faPlug,
+  faShower,
+  faPowerOff,
+} from '@fortawesome/free-solid-svg-icons';
 
-import {tabBarOptions} from '@navigators/Layout/option';
+import {TouchableOpacity} from '@components/Actions';
+import {useAppDispatch} from '@hooks/useAppDispatch';
 import Electricity from '@screens/Electricity';
+import {reset} from '@libs/utils/navigation';
 import Statistic from '@screens/Statistic';
 import Contract from '@screens/Contract';
 import Receipt from '@screens/Receipt';
 import Service from '@screens/Service';
 import {RouterPathValue} from '@types';
 import Report from '@screens/Report';
+import {logout} from '@redux/slice';
 import {PATH} from '@configs/path';
 import Water from '@screens/Water';
 import Login from '@screens/Login';
 import Room from '@screens/Room';
-import {
-  CommunityTabBarIcon,
-  LetterTabBarIcon,
-  SearchTabBarIcon,
-  ChatTabBarIcon,
-} from './Layout/TabBarIcons';
 
 type RouteProps = {
   initialRoute: {
@@ -35,29 +41,35 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export const Tabs: React.FC = () => {
-  const insets = useSafeAreaInsets();
+  const dispatch = useAppDispatch();
 
   return (
     <View
       style={{
         flex: 1,
         justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        paddingLeft: insets.left,
-        paddingRight: insets.right,
       }}>
-      <Tab.Navigator screenOptions={tabBarOptions}>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarActiveTintColor: '#2352eb',
+          tabBarInactiveTintColor: '#36363b',
+          headerRight: () => (
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() => {
+                dispatch(logout());
+                reset(PATH.LOGIN);
+              }}>
+              <FontAwesomeIcon size={20} icon={faPowerOff} />
+            </TouchableOpacity>
+          ),
+        }}>
         <Tab.Screen
           name={PATH.STATISTIC}
           component={Statistic}
           options={{
-            tabBarLabel: 'Community',
-            tabBarIcon: ({color, focused}) => (
-              <TouchableWithoutFeedback>
-                <CommunityTabBarIcon color={color} focused={focused} />
-              </TouchableWithoutFeedback>
+            tabBarIcon: ({color}) => (
+              <FontAwesomeIcon color={color} size={16} icon={faPalette} />
             ),
           }}
         />
@@ -65,11 +77,8 @@ export const Tabs: React.FC = () => {
           name={PATH.ROOM}
           component={Room}
           options={{
-            tabBarLabel: 'Search',
-            tabBarIcon: ({color, focused}) => (
-              <TouchableWithoutFeedback>
-                <SearchTabBarIcon color={color} focused={focused} />
-              </TouchableWithoutFeedback>
+            tabBarIcon: ({color}) => (
+              <FontAwesomeIcon color={color} size={16} icon={faHospital} />
             ),
           }}
         />
@@ -77,11 +86,8 @@ export const Tabs: React.FC = () => {
           name={PATH.SERVICE}
           component={Service}
           options={{
-            tabBarLabel: 'Chat',
-            tabBarIcon: ({color, focused}) => (
-              <TouchableWithoutFeedback>
-                <ChatTabBarIcon color={color} focused={focused} />
-              </TouchableWithoutFeedback>
+            tabBarIcon: ({color}) => (
+              <FontAwesomeIcon color={color} size={16} icon={faBox} />
             ),
           }}
         />
@@ -89,11 +95,8 @@ export const Tabs: React.FC = () => {
           name={PATH.ELECTRICITY}
           component={Electricity}
           options={{
-            tabBarLabel: 'Letter',
-            tabBarIcon: ({color, focused}) => (
-              <TouchableWithoutFeedback>
-                <LetterTabBarIcon color={color} focused={focused} />
-              </TouchableWithoutFeedback>
+            tabBarIcon: ({color}) => (
+              <FontAwesomeIcon color={color} size={16} icon={faPlug} />
             ),
           }}
         />
@@ -101,11 +104,8 @@ export const Tabs: React.FC = () => {
           name={PATH.WATER}
           component={Water}
           options={{
-            tabBarLabel: 'Letter',
-            tabBarIcon: ({color, focused}) => (
-              <TouchableWithoutFeedback>
-                <LetterTabBarIcon color={color} focused={focused} />
-              </TouchableWithoutFeedback>
+            tabBarIcon: ({color}) => (
+              <FontAwesomeIcon color={color} size={16} icon={faShower} />
             ),
           }}
         />
@@ -113,11 +113,8 @@ export const Tabs: React.FC = () => {
           name={PATH.REPORT}
           component={Report}
           options={{
-            tabBarLabel: 'Letter',
-            tabBarIcon: ({color, focused}) => (
-              <TouchableWithoutFeedback>
-                <LetterTabBarIcon color={color} focused={focused} />
-              </TouchableWithoutFeedback>
+            tabBarIcon: ({color}) => (
+              <FontAwesomeIcon color={color} size={16} icon={faCoins} />
             ),
           }}
         />
@@ -125,11 +122,8 @@ export const Tabs: React.FC = () => {
           name={PATH.CONTRACT}
           component={Contract}
           options={{
-            tabBarLabel: 'Letter',
-            tabBarIcon: ({color, focused}) => (
-              <TouchableWithoutFeedback>
-                <LetterTabBarIcon color={color} focused={focused} />
-              </TouchableWithoutFeedback>
+            tabBarIcon: ({color}) => (
+              <FontAwesomeIcon color={color} size={16} icon={faCoins} />
             ),
           }}
         />
@@ -137,11 +131,8 @@ export const Tabs: React.FC = () => {
           name={PATH.RECEIPT}
           component={Receipt}
           options={{
-            tabBarLabel: 'Letter',
-            tabBarIcon: ({color, focused}) => (
-              <TouchableWithoutFeedback>
-                <LetterTabBarIcon color={color} focused={focused} />
-              </TouchableWithoutFeedback>
+            tabBarIcon: ({color}) => (
+              <FontAwesomeIcon color={color} size={16} icon={faCoins} />
             ),
           }}
         />
@@ -155,7 +146,6 @@ export const Routes: React.FC<RouteProps> = ({initialRoute}) => {
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        cardStyle: {backgroundColor: 'transparent'},
       }}
       initialRouteName={initialRoute.stackName}>
       <Stack.Screen

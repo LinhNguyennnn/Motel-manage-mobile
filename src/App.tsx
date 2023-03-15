@@ -1,20 +1,23 @@
 import React from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {PersistGate} from 'redux-persist/integration/react';
 import {TailwindProvider} from 'tailwind-rn';
 import {Provider} from 'react-redux';
 
 import {RootNavigator} from '@navigators/RootNavigator';
+import {persistor, store} from '@redux/storage';
 import utilities from '../tailwind.json';
-import {store} from '@redux/storage';
 
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <TailwindProvider utilities={utilities}>
-        <SafeAreaProvider>
-          <RootNavigator />
-        </SafeAreaProvider>
-      </TailwindProvider>
+      <PersistGate persistor={persistor} loading={null}>
+        <TailwindProvider utilities={utilities}>
+          <SafeAreaProvider>
+            <RootNavigator />
+          </SafeAreaProvider>
+        </TailwindProvider>
+      </PersistGate>
     </Provider>
   );
 };

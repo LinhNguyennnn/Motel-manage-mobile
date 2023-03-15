@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {DatePicker} from '@ant-design/react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {Table, Row} from 'react-native-table-component';
 import {useTailwind} from 'tailwind-rn/dist';
 import {View, Text} from 'react-native';
@@ -35,11 +35,6 @@ const InfoReceipt: React.FC = () => {
   const tailwind = useTailwind();
 
   const dispatch = useAppDispatch();
-
-  const onChange = (date: Date) => {
-    setMonth(date.getMonth() + 1);
-    setYear(date.getFullYear());
-  };
 
   useEffect(() => {
     if (code_room?._id) {
@@ -77,15 +72,15 @@ const InfoReceipt: React.FC = () => {
       <View style={tailwind('bg-white')}>
         <View style={tailwind('max-w-full mx-auto py-6 px-4 sm:px-6 lg:px-8')}>
           <View style={tailwind('lg:flex lg:items-center lg:justify-between')}>
-            <View>
-              <DatePicker
-                style={{width: 200}}
-                onChange={onChange}
-                value={dayjs(`${yearCheck}-${monthCheck}`, 'YYYY-MM').toDate()}
-                format={date => dayjs(date).format('YYYY-MM')}
-                mode="month"
-              />
-            </View>
+            <DateTimePicker
+              value={dayjs().month(monthCheck).year(yearCheck).toDate()}
+              style={{width: 200}}
+              display="calendar"
+              onChange={(_, dateSelect) => {
+                setMonth((dateSelect || today).getMonth() + 1);
+                setYear((dateSelect || today).getFullYear());
+              }}
+            />
           </View>
         </View>
       </View>

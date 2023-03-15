@@ -1,9 +1,9 @@
 import React from 'react';
+import {debounce} from 'lodash';
 import {
   TouchableOpacity as RNTouchableOpacity,
   TouchableOpacityProps,
 } from 'react-native';
-import {debounce} from 'lodash';
 
 export const TouchableOpacity: React.FC<TouchableOpacityProps> = ({
   children,
@@ -17,8 +17,7 @@ export const TouchableOpacity: React.FC<TouchableOpacityProps> = ({
           ? debounce(onPress, 300, {leading: true, trailing: false})
           : undefined
       }
-      {...props}
-    >
+      {...props}>
       {children}
     </RNTouchableOpacity>
   );

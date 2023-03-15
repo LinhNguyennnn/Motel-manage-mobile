@@ -1,150 +1,121 @@
-// import BarChart from '@/components/chart/Bar';
 import React, {useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import {useTailwind} from 'tailwind-rn/dist';
-// import {
-//   getBillServiceByYear,
-//   getDetailBillServiceByMonthYear,
-// } from 'src/pages/api/statistical';
-// import BarDien from '@/components/chart/barDien';
-// import {useUserContext} from '@/context/UserContext';
-// import BarNuoc from '@/components/chart/barNuoc';
+import {useSelector} from 'react-redux';
+
+import {useAppDispatch} from '@hooks/useAppDispatch';
+import {getBillServiceByYear} from '@redux/thunk';
+import {GetListServiceResponse} from '@types';
+import {appSelector} from '@redux/selector';
+import BarChart from '@components/BarChart';
+import Select from '@components/Select';
 
 const Ternant: React.FC = () => {
-  //   const [roomStatisticals, setRoomStatisticals] = useState<any>([]);
-  //   const [totalWater, setTotalWater] = useState<any>([]);
-  //   const [totalElictic, setTotalElictric] = useState<any>([]);
-  //   const [totalElicticDetail, setTotalElictricDetail] = useState<any>([]);
-  //   const [checkYear, setCheckYear] = useState(new Date().getFullYear());
-  //   const [codeRoom, setCodeRoom] = useState<any>();
+  const [checkYear, setCheckYear] = useState<number>(new Date().getFullYear());
+  const [totalElictic, setTotalElictric] = useState<GetListServiceResponse>();
+  const [totalWater, setTotalWater] = useState<GetListServiceResponse>();
+
+  const {code_room} = useSelector(appSelector);
 
   const tailwind = useTailwind();
-  //   useEffect(() => {
-  //     const data = cookies?.code_room;
-  //     setCodeRoom(data as any);
-  //   }, [cookies?.code_room]);
 
-  //   const yearStatistical = new Date().getFullYear();
-  //   var years = Array.from(
-  //     new Array(20),
-  //     (val, index) => yearStatistical - index,
-  //   );
-  //   const checkNameNuoc = 'nuoc';
-  //   const checkNameDien = 'dien';
+  const dispatch = useAppDispatch();
 
-  //   const YearShow = React.useMemo(() => {
-  //     const onChange = (data: any) => {
-  //       setCheckYear(parseInt(data.target.value));
-  //     };
-  //     return (
-  //       <div className="">
-  //         <label
-  //           className="block text-gray-700 text-sm font-bold"
-  //           htmlFor="username">
-  //           Chọn năm thống kê
-  //         </label>
-  //         <select
-  //           className="mt-2 border rounded w-[10%] 2xs:w-[20%] xs:w-[20%] s:w-[20%] py-2 px-3 text-gray-700 leading-tight"
-  //           id="status"
-  //           onChange={onChange}>
-  //           {years?.map((year, index) => {
-  //             return (
-  //               <option key={index} value={year}>
-  //                 {year}
-  //               </option>
-  //             );
-  //           })}
-  //         </select>
-  //       </div>
-  //     );
-  //   }, [years]);
+  useEffect(() => {
+    (async () => {
+      if (checkYear && code_room?._id) {
+        const resultActions = await Promise.all([
+          dispatch(
+            getBillServiceByYear({
+              building_id: code_room?._id,
+              type: 'nuoc',
+              year: checkYear,
+            }),
+          ),
+          dispatch(
+            getBillServiceByYear({
+              building_id: code_room?._id,
+              type: 'dien',
+              year: checkYear,
+            }),
+          ),
+        ]);
 
-  //   useEffect(() => {
-  //     if (checkYear && codeRoom?._id) {
-  //       const getTotalWater = async () => {
-  //         try {
-  //           const {data} = await getBillServiceByYear(
-  //             codeRoom?._id,
-  //             checkNameNuoc,
-  //             checkYear,
-  //           );
-  //           if (data?.data) {
-  //             setTotalWater(data?.data as any);
-  //           }
-  //         } catch (error) {
-  //           console.log('error', error);
-  //         }
-  //       };
-  //       getTotalWater();
-
-  //       const getTotalElictric = async () => {
-  //         try {
-  //           const {data} = await getBillServiceByYear(
-  //             codeRoom?._id,
-  //             checkNameDien,
-  //             checkYear,
-  //           );
-  //           if (data?.data) {
-  //             setTotalElictric(data?.data as any);
-  //           }
-  //         } catch (error) {
-  //           console.log('error', error);
-  //         }
-  //       };
-  //       getTotalElictric();
-
-  //       const getTotalElictricDetail = async () => {
-  //         try {
-  //           const {data} = await getDetailBillServiceByMonthYear(
-  //             codeRoom?._id,
-  //             checkNameDien,
-  //             7,
-  //             checkYear,
-  //           );
-  //           if (data?.data) {
-  //             setTotalElictricDetail(data?.data as any);
-  //           }
-  //         } catch (error) {
-  //           console.log('error', error);
-  //         }
-  //       };
-  //       getTotalElictricDetail();
-  //     }
-  //   }, [codeRoom?._id, checkYear, checkNameDien]);
+        if (getBillServiceByYear.fulfilled.match(resultActions[0])) {
+          setTotalWater(resultActions[0].payload);
+        }
+        if (getBillServiceByYear.fulfilled.match(resultActions[1])) {
+          setTotalElictric(resultActions[1].payload);
+        }
+      }
+    })();
+  }, [code_room, checkYear, dispatch]);
 
   return (
-    <View style={tailwind('w-full flex flex-col')}>
-      <View style={tailwind('bg-white border rounded-md')}>
-        <View style={tailwind('max-w-full mx-auto py-6 px-4 sm:px-6 lg:px-8')}>
-          <View style={tailwind('lg:flex lg:items-center lg:justify-between')}>
-            <View style={tailwind('flex-1 min-w-0')}>
-              <Text
-                style={tailwind(
-                  'text-2xl font-bold leading-7 text-gray-900 sm:text-2xl uppercase',
-                )}>
-                Bảng thống kê
-              </Text>
-            </View>
-          </View>
+    <ScrollView contentContainerStyle={tailwind('w-full flex flex-col p-4')}>
+      <View style={tailwind('bg-white rounded-md shadow')}>
+        <View style={tailwind('max-w-full py-6 px-4 sm:px-6 lg:px-8')}>
+          <Text
+            style={tailwind(
+              'text-2xl font-bold leading-7 text-gray-900 sm:text-2xl uppercase',
+            )}>
+            Bảng thống kê
+          </Text>
         </View>
       </View>
-      {/* {YearShow} */}
+      <View style={tailwind('mt-4')}>
+        <Text style={tailwind('text-gray-700 text-sm font-bold')}>
+          Chọn năm thống kê
+        </Text>
+        <Select
+          data={Array.from(new Array(10), (_, index) => ({
+            label: new Date().getFullYear() - index,
+            value: new Date().getFullYear() - index,
+          }))}
+          selectStyle={tailwind(
+            'border rounded py-2 px-3 text-gray-700 leading-tight',
+          )}
+          value={checkYear}
+          onChange={value => setCheckYear(value as number)}
+        />
+      </View>
       <View
-        style={tailwind('w-full flex lg:flex-nowrap xl:flex-nowrap flex-wrap')}>
+        style={tailwind(
+          'w-full flex lg:flex-nowrap xl:flex-nowrap flex-wrap mt-4',
+        )}>
         <View
           style={tailwind(
-            'w-[100%] lg:w-[50%] xl:w-[50%] bg-white border rounded-md p-2',
+            'w-[100%] lg:w-[50%] xl:w-[50%] bg-white rounded-md p-2',
           )}>
-          {/* <BarDien data={totalElictic} /> */}
-        </View>
-        <View
-          style={tailwind(
-            'w-[100%] lg:w-[50%] xl:w-[50%] bg-white border rounded-md p-2',
-          )}>
-          {/* <BarNuoc dataNuoc={totalWater} /> */}
+          <BarChart
+            labels={Array.from(
+              new Array(12),
+              (_, index) => `Tháng ${index + 1}`,
+            )}
+            data={totalElictic?.data.result || []}
+            color="rgb(255, 152, 152)"
+          />
         </View>
       </View>
-    </View>
+      <View
+        style={tailwind(
+          'w-full flex lg:flex-nowrap xl:flex-nowrap flex-wrap mt-4',
+        )}>
+        <View
+          style={tailwind(
+            'w-[100%] lg:w-[50%] xl:w-[50%] bg-white rounded-md p-2',
+          )}>
+          <BarChart
+            labels={Array.from(
+              new Array(12),
+              (_, index) => `Tháng ${index + 1}`,
+            )}
+            data={totalWater?.data.result || []}
+            color="rgb(153,255,255)"
+          />
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 

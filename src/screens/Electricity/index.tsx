@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {View, Text, TextInput, ScrollView} from 'react-native';
 import {Table, Row, Cell} from 'react-native-table-component';
-import {DatePicker} from '@ant-design/react-native';
 import {useTailwind} from 'tailwind-rn/dist';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
@@ -80,12 +80,14 @@ const ListElectricity: React.FC = () => {
       <View>
         <View style={tailwind('p-2')}>
           <h3>Chọn tháng năm</h3>
-          <DatePicker
+          <DateTimePicker
+            value={dayjs().month(monthCheck).year(yearCheck).toDate()}
             style={{width: 200}}
-            onChange={onChange}
-            value={dayjs(`${yearCheck}-${monthCheck}`, 'YYYY-MM').toDate()}
-            format={date => dayjs(date).format('YYYY-MM')}
-            mode="month"
+            display="calendar"
+            onChange={(_, dateSelect) => {
+              setMonth((dateSelect || today).getMonth() + 1);
+              setYear((dateSelect || today).getFullYear());
+            }}
           />
         </View>
         <View style={tailwind('max-w-full mx-auto py-6 sm:px-6 lg:px-8')}>

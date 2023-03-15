@@ -41,6 +41,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/no-floating-promises': 'off',
     'react-native/no-inline-styles': 'off',
+    'react/no-unstable-nested-components': 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
     '@typescript-eslint/explicit-module-boundary-types': [

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {View, Text, TextInput, ScrollView} from 'react-native';
 import {Table, Row, Cell} from 'react-native-table-component';
-import {DatePicker} from '@ant-design/react-native';
 import {useTailwind} from 'tailwind-rn/dist';
 import {useSelector} from 'react-redux';
 import dayjs from 'dayjs';
@@ -11,6 +11,7 @@ import {useAppDispatch} from '@hooks/useAppDispatch';
 import {appSelector} from '@redux/selector';
 
 const today = new Date();
+
 const ListWater: React.FC = () => {
   const [monthCheck, setMonth] = useState(today.getMonth() + 1);
   const [yearCheck, setYear] = useState(today.getFullYear());
@@ -27,11 +28,6 @@ const ListWater: React.FC = () => {
   const tailwind = useTailwind();
 
   const dispatch = useAppDispatch();
-
-  const onChange = (date: Date) => {
-    setMonth(date.getMonth() + 1);
-    setYear(date.getFullYear());
-  };
 
   useEffect(() => {
     if (!code_room?._id) return;
@@ -77,12 +73,14 @@ const ListWater: React.FC = () => {
       <View>
         <View style={tailwind('block p-2')}>
           <Text>Chọn tháng năm</Text>
-          <DatePicker
+          <DateTimePicker
+            value={dayjs().month(monthCheck).year(yearCheck).toDate()}
             style={{width: 200}}
-            onChange={onChange}
-            value={dayjs(`${yearCheck}-${monthCheck}`, 'YYYY-MM').toDate()}
-            format={date => dayjs(date).format('YYYY-MM')}
-            mode="month"
+            display="calendar"
+            onChange={(_, dateSelect) => {
+              setMonth((dateSelect || today).getMonth() + 1);
+              setYear((dateSelect || today).getFullYear());
+            }}
           />
         </View>
         <View style={tailwind('max-w-full mx-auto py-6 sm:px-6 lg:px-8')}>
