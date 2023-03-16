@@ -2,16 +2,21 @@ import React, {useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {View, Text, TextInput} from 'react-native';
 import {useTailwind} from 'tailwind-rn/dist';
+import {Button} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 
 import {useAppDispatch} from '@hooks/useAppDispatch';
 import {TouchableOpacity} from '@components/Actions';
 import {navigate} from '@libs/utils/navigation';
-import {getRoomByID} from '@redux/thunk';
+import {getRoomBySubname} from '@redux/thunk';
+import {appSelector} from '@redux/selector';
 import {PATH} from '@configs/path';
 
 const Login: React.FC = () => {
   const [isError, setIsError] = useState<boolean>(false);
-  const [roomID, setRoomID] = useState<string>();
+  const [subname, setSubname] = useState<string>();
+
+  const {loading} = useSelector(appSelector);
 
   const tailwind = useTailwind();
 
@@ -34,29 +39,32 @@ const Login: React.FC = () => {
           </Text>
           <TextInput
             style={tailwind('text-black border rounded w-full px-3 h-8')}
-            onChangeText={setRoomID}
+            onChangeText={setSubname}
             placeholder="Xin mời nhập mã"
           />
-          {!roomID && isError && (
+          {!subname && isError && (
             <Text style={tailwind('text-rose-600')}>Không được bỏ trống</Text>
           )}
         </View>
         <TouchableOpacity
           style={tailwind('flex items-center')}
           onPress={async () => {
-            if (!roomID) {
+            if (!subname) {
               setIsError(true);
               return;
             }
             setIsError(false);
-            const resultAction = await dispatch(getRoomByID({room_id: roomID}));
-            if (getRoomByID.fulfilled.match(resultAction)) {
+            const resultAction = await dispatch(getRoomBySubname({subname}));
+            if (getRoomBySubname.fulfilled.match(resultAction)) {
               navigate(PATH.MAIN_TAB);
             }
           }}>
-          <View style={tailwind('bg-blue-500 py-2 px-4 rounded')}>
+          <Button
+            mode="contained"
+            style={tailwind('bg-blue-500 rounded')}
+            loading={loading}>
             <Text style={tailwind('text-white font-bold')}>Đăng nhập</Text>
-          </View>
+          </Button>
         </TouchableOpacity>
       </View>
     </KeyboardAwareScrollView>

@@ -15,14 +15,14 @@ import {
 
 import {TouchableOpacity} from '@components/Actions';
 import {useAppDispatch} from '@hooks/useAppDispatch';
+import Notification from '@screens/Notification';
 import Electricity from '@screens/Electricity';
 import {reset} from '@libs/utils/navigation';
 import Statistic from '@screens/Statistic';
 import Contract from '@screens/Contract';
-import Receipt from '@screens/Receipt';
+import Invoice from '@screens/Invoice';
 import Service from '@screens/Service';
 import {RouterPathValue} from '@types';
-import Report from '@screens/Report';
 import {logout} from '@redux/slice';
 import {PATH} from '@configs/path';
 import Water from '@screens/Water';
@@ -68,6 +68,7 @@ export const Tabs: React.FC = () => {
           name={PATH.STATISTIC}
           component={Statistic}
           options={{
+            title: 'Thống kê',
             tabBarIcon: ({color}) => (
               <FontAwesomeIcon color={color} size={16} icon={faPalette} />
             ),
@@ -77,6 +78,7 @@ export const Tabs: React.FC = () => {
           name={PATH.ROOM}
           component={Room}
           options={{
+            title: 'Phòng',
             tabBarIcon: ({color}) => (
               <FontAwesomeIcon color={color} size={16} icon={faHospital} />
             ),
@@ -86,6 +88,7 @@ export const Tabs: React.FC = () => {
           name={PATH.SERVICE}
           component={Service}
           options={{
+            title: 'Dịch vụ',
             tabBarIcon: ({color}) => (
               <FontAwesomeIcon color={color} size={16} icon={faBox} />
             ),
@@ -95,6 +98,7 @@ export const Tabs: React.FC = () => {
           name={PATH.ELECTRICITY}
           component={Electricity}
           options={{
+            title: 'Điện',
             tabBarIcon: ({color}) => (
               <FontAwesomeIcon color={color} size={16} icon={faPlug} />
             ),
@@ -104,15 +108,17 @@ export const Tabs: React.FC = () => {
           name={PATH.WATER}
           component={Water}
           options={{
+            title: 'Nước',
             tabBarIcon: ({color}) => (
               <FontAwesomeIcon color={color} size={16} icon={faShower} />
             ),
           }}
         />
         <Tab.Screen
-          name={PATH.REPORT}
-          component={Report}
+          name={PATH.INVOICE}
+          component={Invoice}
           options={{
+            title: 'Hoá đơn',
             tabBarIcon: ({color}) => (
               <FontAwesomeIcon color={color} size={16} icon={faCoins} />
             ),
@@ -122,15 +128,17 @@ export const Tabs: React.FC = () => {
           name={PATH.CONTRACT}
           component={Contract}
           options={{
+            title: 'Hợp đồng',
             tabBarIcon: ({color}) => (
               <FontAwesomeIcon color={color} size={16} icon={faCoins} />
             ),
           }}
         />
         <Tab.Screen
-          name={PATH.RECEIPT}
-          component={Receipt}
+          name={PATH.NOTIFICATION}
+          component={Notification}
           options={{
+            title: 'Thông báo',
             tabBarIcon: ({color}) => (
               <FontAwesomeIcon color={color} size={16} icon={faCoins} />
             ),

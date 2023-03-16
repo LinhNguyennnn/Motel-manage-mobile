@@ -3,6 +3,7 @@ import {AxiosRequestConfig} from 'axios';
 
 import {instance} from '@libs/utils/axios';
 import {
+  CreateNotificationRequest,
   CreatePaymentRequest,
   CreatePaymentResponse,
   GetBillRoomIDRequest,
@@ -17,6 +18,7 @@ import {
   GetListServiceResponse,
   GetRoomDataRequest,
   GetRoomDataResponse,
+  RemoveNotificationRequest,
   ThunkAPI,
 } from '@types';
 
@@ -29,37 +31,18 @@ export const getDetailBillServiceByMonthYear = createAsyncThunk<
   async (req, {rejectWithValue}) => {
     try {
       const request: AxiosRequestConfig = {
-        url: `/statistical/get-detail-bill-service/${req.room_id}/${req.building_name}/${req.month}/${req.year}`,
+        url: `/statistical/get-detail-bill-service/${req.room_id}/${req.type}/${req.month}/${req.year}`,
         method: 'GET',
       };
 
       const {data} = await instance(request);
 
-      return data;
+      return {...data, type: req.type};
     } catch (error) {
       return rejectWithValue(error);
     }
   },
 );
-
-export const getRoomData = createAsyncThunk<
-  GetRoomDataResponse,
-  GetRoomDataRequest,
-  ThunkAPI
->('app/thunk/getRoomData', async (req, {rejectWithValue}) => {
-  try {
-    const request: AxiosRequestConfig = {
-      url: `/room/${req.room_id}`,
-      method: 'GET',
-    };
-
-    const {data} = await instance(request);
-
-    return data;
-  } catch (error) {
-    return rejectWithValue(error);
-  }
-});
 
 export const getBillRoomID = createAsyncThunk<
   GetBillRoomIDResponse,
@@ -100,14 +83,14 @@ export const createPayment = createAsyncThunk<
   }
 });
 
-export const getRoomByID = createAsyncThunk<
+export const getRoomBySubname = createAsyncThunk<
   GetRoomDataResponse,
   GetRoomDataRequest,
   ThunkAPI
->('app/thunk/getRoomByID', async (req, {rejectWithValue}) => {
+>('app/thunk/getRoomBySubname', async (req, {rejectWithValue}) => {
   try {
     const request: AxiosRequestConfig = {
-      url: `/room/get-data/${req.room_id}`,
+      url: `/room/get-data/${req.subname}`,
       method: 'GET',
     };
 
@@ -166,6 +149,45 @@ export const getBillServiceByYear = createAsyncThunk<
     const request: AxiosRequestConfig = {
       url: `/statistical/get-bill-service/${req.building_id}/${req.type}/${req.year}`,
       method: 'GET',
+    };
+
+    const {data} = await instance(request);
+
+    return {...data, type: req.type};
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const removeNotification = createAsyncThunk<
+  undefined,
+  RemoveNotificationRequest,
+  ThunkAPI
+>('app/thunk/removeNotification', async (req, {rejectWithValue}) => {
+  try {
+    const request: AxiosRequestConfig = {
+      url: `/report/remove/${req.id}`,
+      method: 'DELETE',
+    };
+
+    const {data} = await instance(request);
+
+    return data;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
+
+export const createNotification = createAsyncThunk<
+  undefined,
+  CreateNotificationRequest,
+  ThunkAPI
+>('app/thunk/createNotification', async (req, {rejectWithValue}) => {
+  try {
+    const request: AxiosRequestConfig = {
+      url: '/report/create',
+      method: 'POST',
+      data: req,
     };
 
     const {data} = await instance(request);

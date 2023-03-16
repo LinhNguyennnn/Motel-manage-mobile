@@ -14,14 +14,14 @@ type RouteResponse = {
 };
 
 export const useRoute = (): RouteResponse => {
-  const {isAuth, code_room, loading} = useSelector(appSelector);
+  const {isAuth, room_data, loading} = useSelector(appSelector);
 
   const initialRoute = useMemo(() => {
-    if (isAuth && code_room) {
+    if (isAuth && room_data) {
       return {stackName: PATH.MAIN_TAB, routeName: PATH.STATISTIC};
     }
     return {stackName: PATH.LOGIN, routeName: PATH.LOGIN};
-  }, [isAuth, code_room]);
+  }, [isAuth, room_data]);
 
   return {initialRoute, loading};
 };

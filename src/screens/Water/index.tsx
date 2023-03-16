@@ -1,149 +1,141 @@
-import React, {useEffect, useState} from 'react';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {View, Text, TextInput, ScrollView} from 'react-native';
-import {Table, Row, Cell} from 'react-native-table-component';
+import React, {useCallback, useState} from 'react';
+import {View, Text, ScrollView, RefreshControl} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import {DataTable} from 'react-native-paper';
 import {useTailwind} from 'tailwind-rn/dist';
 import {useSelector} from 'react-redux';
-import dayjs from 'dayjs';
 
 import {getDetailBillServiceByMonthYear} from '@redux/thunk';
 import {useAppDispatch} from '@hooks/useAppDispatch';
 import {appSelector} from '@redux/selector';
+import Select from '@components/Select';
 
 const today = new Date();
 
 const ListWater: React.FC = () => {
-  const [monthCheck, setMonth] = useState(today.getMonth() + 1);
-  const [yearCheck, setYear] = useState(today.getFullYear());
-  const [listBillData, setListBillData] = useState<{
-    inputValue: number;
-    outputValue: number;
-  }>({
-    inputValue: 0,
-    outputValue: 0,
-  });
+  const [month, setMonth] = useState<number>(today.getMonth() + 1);
+  const [year, setYear] = useState<number>(today.getFullYear());
 
-  const {code_room} = useSelector(appSelector);
+  const {room_data, data_by_month, loading} = useSelector(appSelector);
 
   const tailwind = useTailwind();
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    if (!code_room?._id) return;
-    (async () => {
-      const resultAction = await dispatch(
-        getDetailBillServiceByMonthYear({
-          room_id: code_room._id,
-          building_name: 'nuoc',
-          month: monthCheck,
-          year: yearCheck,
-        }),
-      );
-      if (getDetailBillServiceByMonthYear.fulfilled.match(resultAction)) {
-        setListBillData(resultAction.payload.data);
-      }
-    })();
-  }, [code_room, dispatch, monthCheck, yearCheck]);
+  const fetchData = useCallback(() => {
+    if (!room_data?.data._id) return;
+
+    dispatch(
+      getDetailBillServiceByMonthYear({
+        room_id: room_data.data._id,
+        type: 'nuoc',
+        month,
+        year,
+      }),
+    );
+  }, [room_data, dispatch, month, year]);
+
+  useFocusEffect(fetchData);
 
   return (
-    <View style={tailwind('h-screen')}>
-      <View style={tailwind('bg-white')}>
-        <View style={tailwind('max-w-full mx-auto py-6 px-4 sm:px-6 lg:px-8')}>
-          <View style={tailwind('lg:flex lg:items-center lg:justify-between')}>
-            <View style={tailwind('flex-1 min-w-0')}>
-              <Text
-                style={tailwind(
-                  'text-2xl font-bold leading-7 text-gray-900 sm:text-2xl sm:truncate uppercase',
-                )}>
-                quản lý số nước hàng tháng
-              </Text>
-            </View>
-            <View style={tailwind('mt-5 flex lg:mt-0 lg:ml-4')}>
-              <TextInput
-                style={tailwind(
-                  'text-black border rounded w-full py-2 px-3 leading-tight',
-                )}
-                placeholder="Tìm kiếm..."
-              />
-            </View>
-          </View>
-        </View>
+    <ScrollView
+      contentContainerStyle={tailwind('w-full flex flex-col p-4')}
+      refreshControl={
+        <RefreshControl
+          colors={['#9Bd35A', '#689F38']}
+          refreshing={loading}
+          onRefresh={fetchData}
+        />
+      }>
+      <View style={tailwind('bg-white py-6 px-4 rounded-md shadow')}>
+        <Text
+          style={tailwind(
+            'text-2xl font-bold leading-7 text-gray-900 uppercase',
+          )}>
+          Quản lý số nước hàng tháng
+        </Text>
       </View>
-      <View>
-        <View style={tailwind('block p-2')}>
-          <Text>Chọn tháng năm</Text>
-          <DateTimePicker
-            value={dayjs().month(monthCheck).year(yearCheck).toDate()}
-            style={{width: 200}}
-            display="calendar"
-            onChange={(_, dateSelect) => {
-              setMonth((dateSelect || today).getMonth() + 1);
-              setYear((dateSelect || today).getFullYear());
-            }}
+      <View style={tailwind('my-2')}>
+        <Text style={tailwind('text-gray-700 text-sm font-bold')}>
+          Chọn tháng năm
+        </Text>
+        <View style={tailwind('flex flex-row')}>
+          <Select
+            data={Array.from(new Array(12), (_, index) => ({
+              label: index + 1,
+              value: index + 1,
+            }))}
+            selectStyle={tailwind(
+              'border rounded py-2 px-3 text-gray-700 leading-tight w-[70px] mr-2',
+            )}
+            value={month}
+            onChange={value => setMonth(value as number)}
+          />
+          <Select
+            data={Array.from(new Array(10), (_, index) => ({
+              label: new Date().getFullYear() - index,
+              value: new Date().getFullYear() - index,
+            }))}
+            selectStyle={tailwind(
+              'border rounded py-2 px-3 text-gray-700 leading-tight w-[100px]',
+            )}
+            value={year}
+            onChange={value => setYear(value as number)}
           />
         </View>
-        <View style={tailwind('max-w-full mx-auto py-6 sm:px-6 lg:px-8')}>
-          <View style={tailwind('flex flex-col')}>
-            <View style={tailwind('overflow-x-auto sm:-mx-6 lg:-mx-8')}>
-              <View
-                style={tailwind('py-2 align-middle inline-block min-w-full ')}>
-                <View
-                  style={tailwind(
-                    'overflow-hidden border-b border-gray-200 sm:rounded-lg',
-                  )}>
-                  <ScrollView horizontal={true}>
-                    <Table
-                      style={tailwind('min-w-full Viewide-y Viewide-gray-200')}>
-                      <Row
-                        data={[
-                          'Tháng',
-                          'Số nước cũ',
-                          'Số nước mới',
-                          'Số nước tiêu thu (m3)',
-                        ]}
-                        widthArr={[100, 100, 100, 100]}
-                        style={tailwind('bg-gray-50')}
-                        textStyle={tailwind(
-                          'px-9 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider',
-                        )}
-                      />
-                    </Table>
-                    <Table
-                      style={tailwind('bg-white Viewide-y Viewide-gray-200')}>
-                      {[
-                        monthCheck,
-                        listBillData.inputValue,
-                        listBillData.outputValue,
-                        listBillData.outputValue - listBillData.inputValue,
-                      ].map((rowData, index) => (
-                        <Cell
-                          key={index}
-                          data={rowData}
-                          width={100}
-                          style={tailwind('text-center')}
-                          textStyle={
-                            index === 0
-                              ? tailwind(
-                                  'px-9 py-4 whitespace text-sm text-gray-500',
-                                )
-                              : index === 3
-                              ? tailwind(
-                                  'px-6 py-4 whitespace text-yellow-500 font-bold',
-                                )
-                              : tailwind('px-6 py-4 whitespace')
-                          }
-                        />
-                      ))}
-                    </Table>
-                  </ScrollView>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
       </View>
-    </View>
+      <View style={tailwind('w-full my-6 shadow')}>
+        <ScrollView horizontal={true} style={tailwind('rounded-md')}>
+          <DataTable style={tailwind('bg-white')}>
+            <DataTable.Header style={tailwind('bg-gray-50')}>
+              {[
+                'Tháng',
+                'Số nước cũ',
+                'Số nước mới',
+                'Số nước tiêu thu (M3)',
+              ].map((title, index) => (
+                <DataTable.Title
+                  key={index}
+                  style={tailwind(
+                    'flex-none justify-center items-center w-[180px]',
+                  )}
+                  textStyle={tailwind(
+                    'text-xs font-medium text-gray-500 uppercase',
+                  )}>
+                  {title}
+                </DataTable.Title>
+              ))}
+            </DataTable.Header>
+            <DataTable.Row>
+              {[
+                month,
+                data_by_month.water.inputValue,
+                data_by_month.water.outputValue,
+                data_by_month.water.outputValue -
+                  data_by_month.water.inputValue,
+              ].map((value, index) => (
+                <DataTable.Cell
+                  key={index}
+                  style={tailwind(
+                    'flex-none justify-center items-center w-[180px]',
+                  )}
+                  textStyle={tailwind(
+                    `px-6 py-4 ${
+                      index === 0
+                        ? 'text-sm text-gray-500'
+                        : index === 3
+                        ? 'text-yellow-500 font-bold'
+                        : ''
+                    }`,
+                  )}>
+                  {value}
+                </DataTable.Cell>
+              ))}
+            </DataTable.Row>
+          </DataTable>
+        </ScrollView>
+      </View>
+    </ScrollView>
   );
 };
 

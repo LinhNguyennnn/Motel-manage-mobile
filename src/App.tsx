@@ -1,5 +1,6 @@
 import React from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {Provider as PaperProvider} from 'react-native-paper';
 import {PersistGate} from 'redux-persist/integration/react';
 import {TailwindProvider} from 'tailwind-rn';
 import {Provider} from 'react-redux';
@@ -12,11 +13,13 @@ const App: React.FC = () => {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor} loading={null}>
-        <TailwindProvider utilities={utilities}>
-          <SafeAreaProvider>
-            <RootNavigator />
-          </SafeAreaProvider>
-        </TailwindProvider>
+        <PaperProvider>
+          <TailwindProvider utilities={utilities}>
+            <SafeAreaProvider>
+              <RootNavigator />
+            </SafeAreaProvider>
+          </TailwindProvider>
+        </PaperProvider>
       </PersistGate>
     </Provider>
   );

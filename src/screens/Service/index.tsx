@@ -1,186 +1,151 @@
-import React, {useEffect, useState} from 'react';
-import {Table, Row} from 'react-native-table-component';
+import React, {useCallback} from 'react';
+import {View, Text, ScrollView, RefreshControl} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import {DataTable} from 'react-native-paper';
 import {useTailwind} from 'tailwind-rn/dist';
-import {View, Text} from 'react-native';
 import {useSelector} from 'react-redux';
 
-import {GetListServiceResponse, GetRoomDataResponse} from '@types';
-import {getListService, getRoomData} from '@redux/thunk';
 import {useAppDispatch} from '@hooks/useAppDispatch';
+import {getListService} from '@redux/thunk';
 import {appSelector} from '@redux/selector';
 
 const InfoService: React.FC = () => {
-  const [listServices, setListServices] = useState<GetListServiceResponse>();
-  const [roomData, setRoomData] = useState<GetRoomDataResponse>();
-
-  const {code_room} = useSelector(appSelector);
+  const {room_data, service, loading} = useSelector(appSelector);
 
   const tailwind = useTailwind();
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    (async () => {
-      if (code_room?._id) {
-        const resultAction = await dispatch(
-          getRoomData({
-            room_id: code_room._id,
-          }),
-        );
-        if (getRoomData.fulfilled.match(resultAction)) {
-          setRoomData(resultAction.payload);
-        }
-      }
-      if (code_room?.building_id) {
-        const resultAction = await dispatch(
-          getListService({building_id: code_room.building_id}),
-        );
-        if (getListService.fulfilled.match(resultAction)) {
-          setListServices(resultAction.payload);
-        }
-      }
-    })();
-  }, [code_room, dispatch]);
+  const fetchData = useCallback(() => {
+    if (!room_data?.data.idHouse) return;
+    dispatch(getListService({building_id: room_data.data.idHouse}));
+  }, [room_data, dispatch]);
+
+  useFocusEffect(fetchData);
 
   return (
-    <View style={tailwind('h-auto')}>
-      <View style={tailwind('bg-white')}>
-        <View style={tailwind('max-w-full mx-auto py-6 px-4 sm:px-6 lg:px-8')}>
-          <View style={tailwind('lg:flex lg:items-center lg:justify-between')}>
-            <View style={tailwind('flex-1 min-w-0')}>
-              <Text
-                style={tailwind(
-                  'text-2xl font-bold leading-7 text-gray-900 sm:text-2xl sm:truncate uppercase',
-                )}>
-                quản lý dịch vụ
-              </Text>
-            </View>
-          </View>
-        </View>
+    <ScrollView
+      contentContainerStyle={tailwind('w-full flex flex-col p-4')}
+      refreshControl={
+        <RefreshControl
+          colors={['#9Bd35A', '#689F38']}
+          refreshing={loading}
+          onRefresh={fetchData}
+        />
+      }>
+      <View style={tailwind('bg-white py-6 px-4 rounded-md shadow')}>
+        <Text
+          style={tailwind(
+            'text-2xl font-bold leading-7 text-gray-900 uppercase',
+          )}>
+          Quản lý dịch vụ
+        </Text>
       </View>
-      <View style={tailwind('max-w-full mx-auto py-6 sm:px-6 lg:px-8')}>
-        <View style={tailwind('flex flex-col')}>
-          <View style={tailwind('overflow-x-auto sm:-mx-6 lg:-mx-8')}>
-            <View
-              style={tailwind('py-2 align-middle inline-block min-w-full ')}>
-              <View
-                style={tailwind(
-                  'overflow-hidden border-b border-gray-200 sm:rounded-lg',
-                )}>
-                <View style={tailwind('bg-white')}>
-                  <View
-                    style={tailwind(
-                      'max-w-full mx-auto py-6 px-4 sm:px-6 lg:px-8',
-                    )}>
-                    <View
-                      style={tailwind(
-                        'lg:flex lg:items-center lg:justify-between',
-                      )}>
-                      <View style={tailwind('flex-1 min-w-0')}>
-                        <Text
-                          style={tailwind(
-                            'text-lg font-bold leading-7 text-gray-900 sm:text-lg sm:truncate uppercase',
-                          )}>
-                          dịch vụ chung
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-                <Table style={tailwind('min-w-full divide-y divide-gray-200')}>
-                  <Row
-                    data={['Tên dịch vụ', 'Giá dịch vụ']}
-                    widthArr={[100, 100]}
-                    style={tailwind('bg-gray-50')}
-                    textStyle={tailwind(
-                      'px-9 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider',
-                    )}
-                  />
-                  {listServices?.data.doNotDelete && (
-                    <Row
-                      data={[
-                        listServices?.data.label,
-                        listServices?.data.price.toLocaleString('it-IT', {
-                          style: 'currency',
-                          currency: 'VND',
-                        }),
-                      ]}
-                      widthArr={[100, 100]}
-                      style={tailwind('bg-white divide-y divide-gray-200')}
-                      textStyle={tailwind(
-                        'px-9 py-4 whitespace text-sm text-gray-500',
-                      )}
-                    />
+      <View style={tailwind('w-full my-6 bg-white rounded shadow')}>
+        <View style={tailwind('py-6 px-4')}>
+          <Text
+            style={tailwind(
+              'text-2xl font-bold leading-7 text-gray-900 uppercase',
+            )}>
+            Dịch vụ chung
+          </Text>
+        </View>
+        <ScrollView horizontal={true}>
+          <DataTable>
+            <DataTable.Header style={tailwind('bg-gray-50')}>
+              {['Tên dịch vụ', 'Giá dịch vụ'].map((title, index) => (
+                <DataTable.Title
+                  key={index}
+                  style={tailwind(
+                    'flex-none justify-center items-center w-[180px]',
                   )}
-                </Table>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-      <View style={tailwind('max-w-full mx-auto py-6 sm:px-6 lg:px-8')}>
-        <View style={tailwind('flex flex-col')}>
-          <View style={tailwind('overflow-x-auto sm:-mx-6 lg:-mx-8')}>
-            <View
-              style={tailwind('py-2 align-middle inline-block min-w-full ')}>
-              <View
-                style={tailwind(
-                  'overflow-hidden border-b border-gray-200 sm:rounded-lg',
-                )}>
-                <View style={tailwind('bg-white')}>
-                  <View
-                    style={tailwind(
-                      'max-w-full mx-auto py-6 px-4 sm:px-6 lg:px-8',
-                    )}>
-                    <View
+                  textStyle={tailwind(
+                    'text-xs font-medium text-gray-500 uppercase',
+                  )}>
+                  {title}
+                </DataTable.Title>
+              ))}
+            </DataTable.Header>
+            {service?.data.map((s, index) =>
+              s.doNotDelete ? (
+                <DataTable.Row key={index}>
+                  {[
+                    s.label,
+                    s.price.toLocaleString('it-IT', {
+                      style: 'currency',
+                      currency: 'VND',
+                    }),
+                  ].map((value, index2) => (
+                    <DataTable.Cell
+                      key={index2}
                       style={tailwind(
-                        'lg:flex lg:items-center lg:justify-between',
-                      )}>
-                      <View style={tailwind('flex-1 min-w-0')}>
-                        <Text
-                          style={tailwind(
-                            'text-lg font-bold leading-7 text-gray-900 sm:text-lg sm:truncate uppercase',
-                          )}>
-                          dịch vụ riêng
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-
-                <Table style={tailwind('min-w-full divide-y divide-gray-200')}>
-                  <Row
-                    data={['Tên dịch vụ', 'Giá dịch vụ']}
-                    widthArr={[100, 100]}
-                    style={tailwind('bg-gray-50')}
-                    textStyle={tailwind(
-                      'px-9 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider',
-                    )}
-                  />
-                  {roomData?.service.map((service, index) => (
-                    <Row
-                      key={index}
-                      data={[
-                        service.name,
-                        service.price.toLocaleString('it-IT', {
-                          style: 'currency',
-                          currency: 'VND',
-                        }),
-                      ]}
-                      widthArr={[100, 100]}
-                      style={tailwind('bg-white divide-y divide-gray-200')}
-                      textStyle={tailwind(
-                        'px-9 py-4 whitespace text-sm text-gray-500',
+                        'flex-none justify-center items-center w-[180px]',
                       )}
-                    />
+                      textStyle={tailwind(
+                        `text-sm${index2 === 0 ? ' text-gray-500' : ''}`,
+                      )}>
+                      {value}
+                    </DataTable.Cell>
                   ))}
-                </Table>
-              </View>
-            </View>
-          </View>
-        </View>
+                </DataTable.Row>
+              ) : null,
+            )}
+          </DataTable>
+        </ScrollView>
       </View>
-    </View>
+      <View style={tailwind('w-full my-6 bg-white rounded shadow')}>
+        <View style={tailwind('py-6 px-4')}>
+          <Text
+            style={tailwind(
+              'text-2xl font-bold leading-7 text-gray-900 uppercase',
+            )}>
+            Dịch vụ riêng
+          </Text>
+        </View>
+        <ScrollView horizontal={true}>
+          <DataTable>
+            <DataTable.Header style={tailwind('bg-gray-50')}>
+              {['Tên dịch vụ', 'Giá dịch vụ'].map((title, index) => (
+                <DataTable.Title
+                  key={index}
+                  style={tailwind(
+                    'flex-none justify-center items-center w-[180px]',
+                  )}
+                  textStyle={tailwind(
+                    'text-xs font-medium text-gray-500 uppercase',
+                  )}>
+                  {title}
+                </DataTable.Title>
+              ))}
+            </DataTable.Header>
+            {room_data?.data.service.map((s, index) =>
+              s.status ? (
+                <DataTable.Row key={index}>
+                  {[
+                    s.label,
+                    s.price.toLocaleString('it-IT', {
+                      style: 'currency',
+                      currency: 'VND',
+                    }),
+                  ].map((value, index2) => (
+                    <DataTable.Cell
+                      key={index2}
+                      style={tailwind(
+                        'flex-none justify-center items-center w-[180px]',
+                      )}
+                      textStyle={tailwind(
+                        `text-sm${index2 === 0 ? ' text-gray-500' : ''}`,
+                      )}>
+                      {value}
+                    </DataTable.Cell>
+                  ))}
+                </DataTable.Row>
+              ) : null,
+            )}
+          </DataTable>
+        </ScrollView>
+      </View>
+    </ScrollView>
   );
 };
 

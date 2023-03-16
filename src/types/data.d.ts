@@ -1,16 +1,17 @@
 export type GetDetailBillServiceRequest = {
   room_id: string;
-  building_name: string;
+  type: 'dien' | 'nuoc';
   month: number;
   year: number;
 };
 
 export type GetDetailBillServiceResponse = {
   data: {inputValue: number; outputValue: number};
+  type: 'dien' | 'nuoc';
 };
 
 export type GetRoomDataRequest = {
-  room_id: string;
+  subname: string;
 };
 
 export type GetRoomDataResponse = {
@@ -76,11 +77,23 @@ export type GetBillRoomIDRequest = {
 export type GetBillRoomIDResponse = {
   data: Array<{
     _id: string;
-    invoiceService: Array<{
-      amount: number;
-    }>;
-    debt: number;
+    idRoom: string;
+    idHouse: string;
+    idAuth: string;
+    address: string;
+    houseName: string;
+    roomName: string;
+    memberName: string;
+    year: string;
+    month: string;
+    paymentStatus: number;
     paidAmount: number;
+    debt: number;
+    createdAt: Date;
+    invoiceService: {
+      amount: number;
+      serviceName: string;
+    }[];
   }>;
 };
 
@@ -106,7 +119,7 @@ export type GetListServiceByHouseResponse = {
     unit: string;
     type: boolean;
     doNotDelete: boolean;
-  };
+  }[];
 };
 
 export type GetListReportRequest = {
@@ -115,12 +128,14 @@ export type GetListReportRequest = {
 
 export type GetListReportResponse = {
   data: {
+    _id: string;
     idRoom: string;
     idHouse: string;
     roomName: string;
     content: string;
     status: boolean;
-  };
+    createdAt: Date;
+  }[];
 };
 
 export type GetListServiceRequest = {
@@ -131,4 +146,16 @@ export type GetListServiceRequest = {
 
 export type GetListServiceResponse = {
   data: {result: number[]; sum: number};
+  type: 'dien' | 'nuoc';
+};
+
+export type RemoveNotificationRequest = {
+  id: string;
+};
+
+export type CreateNotificationRequest = {
+  idRoom: string;
+  idHouse: string;
+  roomName: string;
+  content: string;
 };

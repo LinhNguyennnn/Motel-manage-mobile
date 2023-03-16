@@ -8,7 +8,7 @@ export const PATH: RouterPath = {
   SERVICE: 'Service',
   ELECTRICITY: 'Electricity',
   WATER: 'Water',
-  REPORT: 'Report',
+  NOTIFICATION: 'Notification',
   CONTRACT: 'Contract',
-  RECEIPT: 'Receipt',
+  INVOICE: 'Invoice',
 };
