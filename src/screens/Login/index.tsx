@@ -38,7 +38,7 @@ const Login: React.FC = () => {
             Nhập mã
           </Text>
           <TextInput
-            style={tailwind('text-black border rounded w-full px-3 h-8')}
+            style={tailwind('text-black border rounded w-full px-3')}
             onChangeText={setSubname}
             placeholder="Xin mời nhập mã"
           />

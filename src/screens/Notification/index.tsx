@@ -10,7 +10,7 @@ import {getListReport, removeNotification} from '@redux/thunk';
 import {useAppDispatch} from '@hooks/useAppDispatch';
 import {TouchableOpacity} from '@components/Actions';
 import {appSelector} from '@redux/selector';
-import ModalCreate from './ModalCreate/Modal';
+import ModalCreate from './ModalCreate';
 
 const Notification: React.FC = () => {
   const {room_data, notifications, loading} = useSelector(appSelector);

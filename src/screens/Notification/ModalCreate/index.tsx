@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import {useTailwind} from 'tailwind-rn/dist';
 import {useSelector} from 'react-redux';
 import {
@@ -26,10 +26,10 @@ const ModalCreate: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const onClose = useCallback(() => {
+  const onClose = () => {
     setModalVisible(false);
     setContent(undefined);
-  }, []);
+  };
 
   return (
     <View>
@@ -38,7 +38,7 @@ const ModalCreate: React.FC = () => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={onClose}
-        supportedOrientations={['portrait', 'landscape']}>
+        supportedOrientations={['portrait']}>
         <View style={styles.wrapperContent}>
           <TouchableWithoutFeedback onPress={onClose}>
             <View style={styles.modalOverlay} />
@@ -52,11 +52,12 @@ const ModalCreate: React.FC = () => {
                 </Text>
                 <TextInput
                   style={tailwind(
-                    'bg-gray-200 border-2 border-gray-200 rounded w-full p-1 text-gray-700 min-h-[200px] my-4',
+                    'bg-gray-200 border-2 border-gray-200 rounded w-full p-1 text-gray-700 h-[100px] my-4',
                   )}
                   onChangeText={setContent}
                   value={content}
                   multiline={true}
+                  textAlignVertical="top"
                   numberOfLines={4}
                   placeholder="Xin mời nhập nội dung"
                 />

@@ -50,6 +50,10 @@
   margin-bottom: 1.5rem
 }
 
+.mb-\[5px\] {
+  margin-bottom: 5px
+}
+
 .mr-2 {
   margin-right: 0.5rem
 }
@@ -98,8 +102,8 @@
   height: 1.5rem
 }
 
-.h-8 {
-  height: 2rem
+.h-\[100px\] {
+  height: 100px
 }
 
 .h-full {

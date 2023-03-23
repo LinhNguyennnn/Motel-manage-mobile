@@ -1,14 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, ScrollView, RefreshControl} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useTailwind} from 'tailwind-rn/dist';
 import {useSelector} from 'react-redux';
 
+import {TouchableOpacity} from '@components/Actions';
 import {useAppDispatch} from '@hooks/useAppDispatch';
 import {getRoomBySubname} from '@redux/thunk';
 import {appSelector} from '@redux/selector';
+import Preview from './Preview';
 
 const ContractTernant: React.FC = () => {
+  const [preview, setPreview] = useState<string>();
+
   const {room_data, loading} = useSelector(appSelector);
 
   const tailwind = useTailwind();
@@ -39,14 +43,18 @@ const ContractTernant: React.FC = () => {
       <View style={tailwind('text-center my-2')}>
         {room_data?.data?.contract.imageContract.length ? (
           room_data?.data?.contract.imageContract.map((uri, index) => (
-            <FastImage
+            <TouchableOpacity
               key={index}
-              source={{
-                uri,
-              }}
-              resizeMode="stretch"
-              style={tailwind('w-full h-full')}
-            />
+              style={tailwind('mb-[5px]')}
+              onPress={() => setPreview(uri)}>
+              <FastImage
+                source={{
+                  uri,
+                }}
+                resizeMode="contain"
+                style={tailwind('w-full min-h-[200px]')}
+              />
+            </TouchableOpacity>
           ))
         ) : (
           <Text style={tailwind('uppercase text-2xl')}>
@@ -54,6 +62,7 @@ const ContractTernant: React.FC = () => {
           </Text>
         )}
       </View>
+      <Preview preview={preview} setPreview={setPreview} />
     </ScrollView>
   );
 };

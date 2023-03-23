@@ -10,7 +10,7 @@ import {
   faPalette,
   faPlug,
   faShower,
-  faPowerOff,
+  faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {TouchableOpacity} from '@components/Actions';
@@ -60,7 +60,7 @@ export const Tabs: React.FC = () => {
                 dispatch(logout());
                 reset(PATH.LOGIN);
               }}>
-              <FontAwesomeIcon size={20} icon={faPowerOff} />
+              <FontAwesomeIcon size={20} icon={faRightFromBracket} />
             </TouchableOpacity>
           ),
         }}>

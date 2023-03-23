@@ -95,7 +95,7 @@ const InfoRoom: React.FC = () => {
         <View style={tailwind('mt-5 flex')}>
           <TextInput
             style={tailwind(
-              'text-black border border-gray-200 rounded w-[50%] px-3 h-8',
+              'text-black border border-gray-200 rounded w-[50%] px-3',
             )}
             onChangeText={setSearchValue}
             placeholder="Tìm kiếm..."
