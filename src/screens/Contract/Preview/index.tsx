@@ -1,11 +1,18 @@
 import React, {useCallback} from 'react';
-import {View, Modal, TouchableWithoutFeedback, Image} from 'react-native';
+
 import ImageZoom from 'react-native-image-pan-zoom';
+import {
+  View,
+  Modal,
+  TouchableWithoutFeedback,
+  Image,
+  Dimensions,
+} from 'react-native';
 
 import styles from './styles';
 
-const WIDTH = 300;
-const HEIGHT = 400;
+const WIDTH = Dimensions.get('window').width;
+const HEIGHT = Dimensions.get('window').height - 300;
 
 type Props = {
   preview: string | undefined;
@@ -33,7 +40,8 @@ const Preview: React.FC<Props> = ({preview, setPreview}) => {
           cropHeight={HEIGHT}
           imageWidth={WIDTH}
           imageHeight={HEIGHT}
-          minScale={1}>
+          minScale={1}
+          maxScale={1.7}>
           <Image
             style={{width: WIDTH, height: HEIGHT}}
             source={{

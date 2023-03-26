@@ -14,7 +14,7 @@ import {PATH} from '@configs/path';
 
 const Login: React.FC = () => {
   const [isError, setIsError] = useState<boolean>(false);
-  const [subname, setSubname] = useState<string>();
+  const [subname, setSubname] = useState<string>('');
 
   const {loading} = useSelector(appSelector);
 
@@ -38,7 +38,7 @@ const Login: React.FC = () => {
             Nhập mã
           </Text>
           <TextInput
-            style={tailwind('text-black border rounded w-full px-3')}
+            style={tailwind('text-black border rounded w-full px-3 py-3')}
             onChangeText={setSubname}
             placeholder="Xin mời nhập mã"
           />
@@ -48,15 +48,16 @@ const Login: React.FC = () => {
         </View>
         <TouchableOpacity
           style={tailwind('flex items-center')}
+          disabled={!subname}
           onPress={async () => {
-            if (!subname) {
-              setIsError(true);
-              return;
+            if (isError) {
+              setIsError(false);
             }
-            setIsError(false);
             const resultAction = await dispatch(getRoomBySubname({subname}));
             if (getRoomBySubname.fulfilled.match(resultAction)) {
               navigate(PATH.MAIN_TAB);
+            } else {
+              setIsError(true);
             }
           }}>
           <Button
