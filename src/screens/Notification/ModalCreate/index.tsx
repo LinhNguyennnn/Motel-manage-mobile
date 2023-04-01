@@ -38,7 +38,7 @@ const ModalCreate: React.FC = () => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={onClose}
-        supportedOrientations={['portrait']}>
+        supportedOrientations={['portrait', 'landscape']}>
         <View style={styles.wrapperContent}>
           <TouchableWithoutFeedback onPress={onClose}>
             <View style={styles.modalOverlay} />

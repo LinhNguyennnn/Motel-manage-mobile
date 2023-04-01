@@ -4,9 +4,9 @@ import ImageZoom from 'react-native-image-pan-zoom';
 import {
   View,
   Modal,
-  TouchableWithoutFeedback,
   Image,
   Dimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import styles from './styles';
@@ -15,11 +15,12 @@ const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height - 300;
 
 type Props = {
+  left: number;
   preview: string | undefined;
   setPreview: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
-const Preview: React.FC<Props> = ({preview, setPreview}) => {
+const Preview: React.FC<Props> = ({left, preview, setPreview}) => {
   const onClose = useCallback(() => {
     setPreview(undefined);
   }, [setPreview]);
@@ -36,14 +37,14 @@ const Preview: React.FC<Props> = ({preview, setPreview}) => {
           <View style={styles.modalOverlay} />
         </TouchableWithoutFeedback>
         <ImageZoom
-          cropWidth={WIDTH}
+          cropWidth={WIDTH - left}
           cropHeight={HEIGHT}
-          imageWidth={WIDTH}
+          imageWidth={WIDTH - left}
           imageHeight={HEIGHT}
           minScale={1}
           maxScale={1.7}>
           <Image
-            style={{width: WIDTH, height: HEIGHT}}
+            style={{width: WIDTH - left, height: HEIGHT}}
             source={{
               uri: preview,
             }}

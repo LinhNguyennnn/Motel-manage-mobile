@@ -8,7 +8,8 @@ export type RouterPathKey =
   | 'WATER'
   | 'NOTIFICATION'
   | 'CONTRACT'
-  | 'INVOICE';
+  | 'INVOICE'
+  | 'OTHER';
 
 export type RouterPathValue =
   | 'Login'
@@ -20,7 +21,8 @@ export type RouterPathValue =
   | 'Water'
   | 'Notification'
   | 'Contract'
-  | 'Invoice';
+  | 'Invoice'
+  | 'Other';
 
 export type RouterPath = {[key in RouterPathKey]: RouterPathValue};
 

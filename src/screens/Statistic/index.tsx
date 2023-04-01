@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {View, Text, ScrollView, RefreshControl} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useFocusEffect} from '@react-navigation/native';
 import {useTailwind} from 'tailwind-rn/dist';
 import {useSelector} from 'react-redux';
@@ -18,6 +19,8 @@ const Ternant: React.FC = () => {
   const tailwind = useTailwind();
 
   const dispatch = useAppDispatch();
+
+  const {left} = useSafeAreaInsets();
 
   const fetchData = useCallback(() => {
     if (!checkYear || !room_data?.data._id) return;
@@ -43,7 +46,10 @@ const Ternant: React.FC = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={tailwind('w-full flex flex-col p-4')}
+      contentContainerStyle={{
+        ...tailwind('w-full flex flex-col py-4'),
+        paddingHorizontal: left || 16,
+      }}
       refreshControl={
         <RefreshControl
           colors={['#9Bd35A', '#689F38']}
@@ -79,6 +85,7 @@ const Ternant: React.FC = () => {
         <BarChart
           labels={Array.from(new Array(12), (_, index) => `Tháng ${index + 1}`)}
           data={data_by_year.electric.result || []}
+          left={left}
           color="rgb(255, 152, 152)"
         />
       </View>
@@ -86,6 +93,7 @@ const Ternant: React.FC = () => {
         <BarChart
           labels={Array.from(new Array(12), (_, index) => `Tháng ${index + 1}`)}
           data={data_by_year.water.result || []}
+          left={left}
           color="rgb(153,255,255)"
         />
       </View>

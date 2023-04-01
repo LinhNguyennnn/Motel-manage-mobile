@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from 'react';
 import {View, Text, ScrollView, RefreshControl} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useFocusEffect} from '@react-navigation/native';
 import {DataTable} from 'react-native-paper';
 import {useTailwind} from 'tailwind-rn/dist';
@@ -22,6 +23,8 @@ const ListWater: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
+  const {left} = useSafeAreaInsets();
+
   const fetchData = useCallback(() => {
     if (!room_data?.data._id) return;
 
@@ -39,7 +42,10 @@ const ListWater: React.FC = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={tailwind('w-full flex flex-col p-4')}
+      contentContainerStyle={{
+        ...tailwind('w-full flex flex-col py-4'),
+        paddingHorizontal: left || 16,
+      }}
       refreshControl={
         <RefreshControl
           colors={['#9Bd35A', '#689F38']}

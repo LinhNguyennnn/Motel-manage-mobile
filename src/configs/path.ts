@@ -11,4 +11,5 @@ export const PATH: RouterPath = {
   NOTIFICATION: 'Notification',
   CONTRACT: 'Contract',
   INVOICE: 'Invoice',
+  OTHER: 'Other',
 };

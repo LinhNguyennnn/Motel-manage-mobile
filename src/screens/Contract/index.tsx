@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, ScrollView, RefreshControl} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image';
 import {useTailwind} from 'tailwind-rn/dist';
 import {useSelector} from 'react-redux';
@@ -19,9 +20,14 @@ const ContractTernant: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
+  const {left} = useSafeAreaInsets();
+
   return (
     <ScrollView
-      contentContainerStyle={tailwind('w-full flex flex-col p-4')}
+      contentContainerStyle={{
+        ...tailwind('w-full flex flex-col py-4'),
+        paddingHorizontal: left || 16,
+      }}
       refreshControl={
         <RefreshControl
           colors={['#9Bd35A', '#689F38']}
@@ -62,7 +68,7 @@ const ContractTernant: React.FC = () => {
           </Text>
         )}
       </View>
-      <Preview preview={preview} setPreview={setPreview} />
+      <Preview preview={preview} setPreview={setPreview} left={left} />
     </ScrollView>
   );
 };

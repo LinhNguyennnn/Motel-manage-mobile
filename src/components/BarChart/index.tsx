@@ -6,9 +6,10 @@ type Props = {
   labels: string[];
   data: number[];
   color: string;
+  left: number;
 };
 
-const BarChart: React.FC<Props> = ({data, labels, color}) => {
+const BarChart: React.FC<Props> = ({data, labels, color, left}) => {
   return (
     <RNBarChart
       data={{
@@ -22,7 +23,7 @@ const BarChart: React.FC<Props> = ({data, labels, color}) => {
       yAxisSuffix=""
       yAxisLabel=""
       fromZero
-      width={Dimensions.get('window').width - 55}
+      width={Dimensions.get('window').width - 55 - left}
       height={350}
       withInnerLines={false}
       chartConfig={{

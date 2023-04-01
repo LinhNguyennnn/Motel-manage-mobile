@@ -4,27 +4,22 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {createStackNavigator} from '@react-navigation/stack';
 import {View} from 'react-native';
 import {
-  faBox,
   faCoins,
-  faHospital,
+  faBars,
   faPalette,
   faPlug,
   faShower,
-  faRightFromBracket,
 } from '@fortawesome/free-solid-svg-icons';
 
-import {TouchableOpacity} from '@components/Actions';
-import {useAppDispatch} from '@hooks/useAppDispatch';
 import Notification from '@screens/Notification';
 import Electricity from '@screens/Electricity';
-import {reset} from '@libs/utils/navigation';
 import Statistic from '@screens/Statistic';
 import Contract from '@screens/Contract';
 import Invoice from '@screens/Invoice';
 import Service from '@screens/Service';
 import {RouterPathValue} from '@types';
-import {logout} from '@redux/slice';
 import {PATH} from '@configs/path';
+import Other from '@screens/Other';
 import Water from '@screens/Water';
 import Login from '@screens/Login';
 import Room from '@screens/Room';
@@ -40,9 +35,7 @@ type RouteProps = {
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-export const Tabs: React.FC = () => {
-  const dispatch = useAppDispatch();
-
+const Tabs: React.FC = () => {
   return (
     <View
       style={{
@@ -53,16 +46,6 @@ export const Tabs: React.FC = () => {
         screenOptions={{
           tabBarActiveTintColor: '#2352eb',
           tabBarInactiveTintColor: '#36363b',
-          headerRight: () => (
-            <TouchableOpacity
-              style={{marginRight: 10}}
-              onPress={() => {
-                dispatch(logout());
-                reset(PATH.LOGIN);
-              }}>
-              <FontAwesomeIcon size={20} icon={faRightFromBracket} />
-            </TouchableOpacity>
-          ),
         }}>
         <Tab.Screen
           name={PATH.STATISTIC}
@@ -71,26 +54,6 @@ export const Tabs: React.FC = () => {
             title: 'Thống kê',
             tabBarIcon: ({color}) => (
               <FontAwesomeIcon color={color} size={16} icon={faPalette} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={PATH.ROOM}
-          component={Room}
-          options={{
-            title: 'Phòng',
-            tabBarIcon: ({color}) => (
-              <FontAwesomeIcon color={color} size={16} icon={faHospital} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={PATH.SERVICE}
-          component={Service}
-          options={{
-            title: 'Dịch vụ',
-            tabBarIcon: ({color}) => (
-              <FontAwesomeIcon color={color} size={16} icon={faBox} />
             ),
           }}
         />
@@ -125,27 +88,50 @@ export const Tabs: React.FC = () => {
           }}
         />
         <Tab.Screen
-          name={PATH.CONTRACT}
-          component={Contract}
+          name={PATH.OTHER}
+          component={Other}
           options={{
-            title: 'Hợp đồng',
+            title: 'Mở rộng',
             tabBarIcon: ({color}) => (
-              <FontAwesomeIcon color={color} size={16} icon={faCoins} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={PATH.NOTIFICATION}
-          component={Notification}
-          options={{
-            title: 'Thông báo',
-            tabBarIcon: ({color}) => (
-              <FontAwesomeIcon color={color} size={16} icon={faCoins} />
+              <FontAwesomeIcon color={color} size={16} icon={faBars} />
             ),
           }}
         />
       </Tab.Navigator>
     </View>
+  );
+};
+
+const OtherNavigator: React.FC = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName={PATH.OTHER}
+      screenOptions={{
+        headerBackTitle: 'Trở về',
+      }}>
+      <Stack.Screen
+        name={PATH.ROOM}
+        component={Room}
+        options={{
+          title: 'Phòng',
+        }}
+      />
+      <Stack.Screen
+        name={PATH.SERVICE}
+        component={Service}
+        options={{title: 'Dịch vụ'}}
+      />
+      <Stack.Screen
+        name={PATH.CONTRACT}
+        component={Contract}
+        options={{title: 'Hợp đồng'}}
+      />
+      <Stack.Screen
+        name={PATH.NOTIFICATION}
+        component={Notification}
+        options={{title: 'Thông báo'}}
+      />
+    </Stack.Navigator>
   );
 };
 
@@ -165,6 +151,7 @@ export const Routes: React.FC<RouteProps> = ({initialRoute}) => {
         }}
       />
       <Stack.Screen name={PATH.MAIN_TAB} component={Tabs} />
+      <Tab.Screen name={PATH.OTHER} component={OtherNavigator} />
     </Stack.Navigator>
   );
 };

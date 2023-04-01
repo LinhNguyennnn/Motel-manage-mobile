@@ -2,6 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {faLocationDot, faGlobe} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {View, Text, ScrollView, RefreshControl} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useFocusEffect} from '@react-navigation/native';
 import {DataTable} from 'react-native-paper';
 import {useTailwind} from 'tailwind-rn/dist';
@@ -14,6 +15,7 @@ import {useAppDispatch} from '@hooks/useAppDispatch';
 import {navigate} from '@libs/utils/navigation';
 import {appSelector} from '@redux/selector';
 import Select from '@components/Select';
+import {RouterPathValue} from '@types';
 
 const today = new Date();
 
@@ -26,6 +28,8 @@ const Invoice: React.FC = () => {
   const tailwind = useTailwind();
 
   const dispatch = useAppDispatch();
+
+  const {left} = useSafeAreaInsets();
 
   const fetchData = useCallback(() => {
     if (!room_data?.data._id) return;
@@ -42,7 +46,10 @@ const Invoice: React.FC = () => {
 
   return (
     <ScrollView
-      contentContainerStyle={tailwind('w-full flex flex-col p-4')}
+      contentContainerStyle={{
+        ...tailwind('w-full flex flex-col py-4'),
+        paddingHorizontal: left || 16,
+      }}
       refreshControl={
         <RefreshControl
           colors={['#9Bd35A', '#689F38']}
@@ -343,7 +350,10 @@ const Invoice: React.FC = () => {
                                 }),
                               );
                               if (createPayment.fulfilled.match(resultAction)) {
-                                navigate(resultAction.payload.redirect);
+                                navigate(
+                                  resultAction.payload
+                                    .redirect as RouterPathValue,
+                                );
                               }
                             }}>
                             <Text

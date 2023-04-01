@@ -54,8 +54,16 @@
   margin-bottom: 5px
 }
 
+.ml-2 {
+  margin-left: 0.5rem
+}
+
 .mr-2 {
   margin-right: 0.5rem
+}
+
+.mt-2 {
+  margin-top: 0.5rem
 }
 
 .mt-4 {
@@ -202,6 +210,10 @@
   border-width: 2px
 }
 
+.border-b {
+  border-bottom-width: 1px
+}
+
 .border-l-2 {
   border-left-width: 2px
 }
@@ -344,6 +356,10 @@
 .py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem
+}
+
+.pb-4 {
+  padding-bottom: 1rem
 }
 
 .pb-8 {
